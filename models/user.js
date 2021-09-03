@@ -4,18 +4,14 @@ const {Schema,model} = require('mongoose');
 
 
 
-const schema = new Schema({
+const userSchema = new Schema({
     email: String,
-    password: {
-        type: String,
-        min: 6,
-        required: true
-    },
+    password: String,
     resetPasswordCode: String
 });
 
 
-const User = model('Users',schema);
+const User = model('Users',userSchema);
 
 
 
