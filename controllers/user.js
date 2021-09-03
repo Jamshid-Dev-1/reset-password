@@ -80,17 +80,7 @@ exports.emailSend = async (req, res) => {
         data: req.body,
     });
     //nodemailer
-    let testAccount = await nodemailer.createTestAccount();
 
-    let transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
-        auth: {
-            user: testAccount.user,
-            pass: testAccount.pass,
-        },
-    });
 
     if (!validateResult.success) return res.status(400).json(validateResult);
     const {
@@ -112,14 +102,26 @@ exports.emailSend = async (req, res) => {
                 upperCase: true,
                 specialChars: true,
             });
-            let info = await transporter.sendMail({
-                from: "jhasanov944@gmail.com", // sender address
-                to: "hasanovj682@gmail.com", // list of receivers
-                subject: "Hello ✔", // Subject line
-                text: "Hello world?", // plain text body
-                html: "<b>Hello world?</b>", // html body
+            let testAccount = await nodemailer.createTestAccount();
+
+            let transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: testAccount.user,
+                    pass: testAccount.pass,
+                },
             });
-            console.log(info)
+            const options = {
+                from: "jhasanov944@gmail.com", 
+                to: "hasanovj682@gmail.com", 
+                subject: "Hello ✔", 
+                text: "Hello world?", 
+                html: "<b>Hello world?</b>", 
+            }
+            await transporter.sendMail(options,(err,info) =>  {
+                if(err) return console.log(err);
+                console.log(info.response)
+            });
         })
         .catch((err) => {
             res.status(400).json({
